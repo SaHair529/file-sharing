@@ -18,7 +18,7 @@ final class FileController extends AbstractController
     public function upload(Request $request, EntityManagerInterface $em): Response
     {
         if ($request->isMethod('POST')) {
-            $uploadedFile = $request->file->get('file');
+            $uploadedFile = $request->files->get('file');
             if ($uploadedFile) {
                 $newFileName = bin2hex(random_bytes(16)) . '.' . $uploadedFile->guessExtension();
                 $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
