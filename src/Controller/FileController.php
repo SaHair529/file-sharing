@@ -8,59 +8,72 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class FileController extends AbstractController
 {
-    #[Route('/', name: 'upload_file', methods: ['GET', 'POST'])]
-    public function upload(Request $request, EntityManagerInterface $em): Response
+    #[Route('/', name: 'main', methods: ['GET'])]
+    public function index(): Response
     {
-        if ($request->isMethod('POST')) {
-            $uploadedFile = $request->files->get('file');
-            if ($uploadedFile) {
-                $newFileName = bin2hex(random_bytes(16)) . '.' . $uploadedFile->guessExtension();
-                $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
-                $uploadedFile->move($uploadDir, $newFileName);
-
-                $fileEntity = new UploadedFile();
-                $fileEntity->setFilename($newFileName);
-                $fileEntity->setOriginalName($uploadedFile->getClientOriginalName);
-                $fileEntity->setUploadedAt(new DateTimeImmutable());
-                $fileEntity->setExpiresAt((new DateTimeImmutable())->modify('+ 1 day'));
-                $fileEntity->setToken(bin2hex(random_bytes(16)));
-
-                $em->persist($fileEntity);
-                $em->flush();
-
-                return $this->render('file/upload_success.html.twig', [
-                    'download_link' => $this->generateUrl('download_file', [
-                        'token' => $fileEntity->getToken()
-                    ], 0)
-                ]);
-            }
-
-        }
-
         return $this->render('file/upload.html.twig');
     }
 
-    #[Route('/download/{token}', name: 'download_file')]
-    public function download(string $token, EntityManagerInterface $em): Response
+    #[Route('/', name: 'upload_file', methods: ['POST'])]
+    public function upload(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $fileEntity = $em->getRepository(UploadedFile::class)->findOneBy(['token' => $token]);
-        if (!$fileEntity || $fileEntity->getExpiresAt() < new DateTimeImmutable()) {
-            throw $this->createNotFoundException('File not found or expired.');
+        $uploadedFiles = $request->files->get('files');
+        if (!is_array($uploadedFiles)) {
+            throw $this->createNotFoundException('No files uploaded.');
         }
 
-        $filePath = $this->getParameter('kernel.project_dir') . '/public/uploads' . $fileEntity->getFileName();
+        $token = bin2hex(random_bytes(16));
+        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        foreach ($uploadedFiles as $uploadedFile) {
+            $uploadedFile->move($uploadDir, $uploadedFile->getClientOriginalName());
+        }
+        $em->flush();
+
+        return $this->json([
+            'download_link' => $this->generateUrl('download_file', [
+                'token' => $token
+            ], 0)
+        ]);
+    }
+
+    #[Route('/download/{token}', name: 'download_file')]
+    public function download(string $token): Response
+    {
+        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
 
         $filesystem = new Filesystem();
-        if (!$filesystem->exists($filePath)) {
-            throw $this->createNotFoundException('File not found');
+        if (!$filesystem->exists($uploadDir)) {
+            throw $this->createNotFoundException('Folder not found');
         }
 
-        return new BinaryFileResponse($filePath);
+        $zipFilePath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token . '.zip';
+        $zip = new \ZipArchive();
+
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \RuntimeException('Cannot create zip file');
+        }
+
+        $files = scandir($uploadDir);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $zip->addFile($uploadDir . '/' . $file, $file);
+            }
+        }
+
+        $zip->close();
+
+        return new BinaryFileResponse($zipFilePath);
     }
 }

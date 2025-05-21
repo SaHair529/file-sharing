@@ -24,6 +24,32 @@ document.querySelector('#file').addEventListener('change', function (e) {
     $uploadFilesBtn.hidden = false
 })
 
+document.querySelector('.upload-files-btn').addEventListener('click', function () {
+    const url = document.querySelector('form').getAttribute('action')
+    const formData = new FormData()
+    selectedFiles.forEach(file => {
+        formData.append('files[]', file)
+    })
+
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    // .then(response => response.json())
+    // .then(data => {
+    //     if (data.success) {
+    //         alert('Files uploaded successfully!')
+    //         selectedFiles = []
+    //         document.querySelector('#file').value = ''
+    //         document.querySelector('.files-gallery').innerHTML = ''
+    //         document.querySelector('.files-gallery').hidden = true
+    //         document.querySelector('.upload-files-btn').hidden = true
+    //     } else {
+    //         alert('Failed to upload files.')
+    //     }
+    // })
+})
+
 function removeFile(index) {
     selectedFiles.splice(index, 1)
 
