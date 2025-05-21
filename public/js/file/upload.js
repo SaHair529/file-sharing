@@ -3,6 +3,8 @@ let selectedFiles = []
 document.querySelector('#file').addEventListener('change', function (e) {
     const files = e.target.files
     const $filesGallery = document.querySelector('.files-gallery')
+    const $uploadFilesBtn = document.querySelector('.upload-files-btn')
+
     $filesGallery.innerHTML = ''
 
     selectedFiles = Array.from(files)
@@ -19,12 +21,14 @@ document.querySelector('#file').addEventListener('change', function (e) {
     })
 
     $filesGallery.hidden = false
+    $uploadFilesBtn.hidden = false
 })
 
 function removeFile(index) {
     selectedFiles.splice(index, 1)
 
     const $filesGallery = document.querySelector('.files-gallery')
+    const $uploadFilesBtn = document.querySelector('.upload-files-btn')
     $filesGallery.innerHTML = ''
 
     selectedFiles.forEach((file, index) => {
@@ -40,6 +44,7 @@ function removeFile(index) {
 
     if (selectedFiles.length === 0) {
         $filesGallery.hidden = true
+        $uploadFilesBtn.hidden = true
     }
 }
 

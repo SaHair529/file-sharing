@@ -35,7 +35,7 @@ body {
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;
-    margin-top: 20px;
+    margin: 20px 0;
     padding: 10px;
 
     width: 90%;
@@ -82,5 +82,20 @@ body {
 
     &[hidden] {
         display: none !important;
+    }
+}
+
+.upload-files-btn {
+    font-size: 15px;
+    background-color: #5677af;
+    border: 2px solid #3a3a3a;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+
+    &:hover {
+        background-color: #5783d0;
+        border-color: #5a5a5a;
     }
 }

@@ -17,12 +17,11 @@
             <form action="{{ path('upload_file') }}" method="post" enctype="multipart/form-data">
                 <label for="file" class="pseudo-button">Выберите файлы для загрузки</label>
                 <input type="file" id="file" name="file" required multiple hidden><br><br>
-
-                <button type="submit" hidden>Получить ссылку</button>
             </form>
         </div>
 
         <div class="files-gallery" hidden>
         </div>
+        <button class="upload-files-btn" hidden>Загрузить выбранные файлы и получить ссылку</button>
     </div>
 {% endblock %}
