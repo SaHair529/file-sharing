@@ -35,19 +35,30 @@ document.querySelector('.upload-files-btn').addEventListener('click', function (
         method: 'POST',
         body: formData
     })
-    // .then(response => response.json())
-    // .then(data => {
-    //     if (data.success) {
-    //         alert('Files uploaded successfully!')
-    //         selectedFiles = []
-    //         document.querySelector('#file').value = ''
-    //         document.querySelector('.files-gallery').innerHTML = ''
-    //         document.querySelector('.files-gallery').hidden = true
-    //         document.querySelector('.upload-files-btn').hidden = true
-    //     } else {
-    //         alert('Failed to upload files.')
-    //     }
-    // })
+    .then(response => {
+        if (response.ok) {
+            response.json().then(responseData => {
+                selectedFiles = []
+                document.querySelector('#file').value = ''
+                document.querySelector('.files-gallery').innerHTML = ''
+                document.querySelector('.files-gallery').hidden = true
+                document.querySelector('.upload-files-btn').hidden = true
+
+                document.querySelector('.upload-result').hidden = false
+                document.querySelector('.uploaded-page-link').textContent = responseData.link
+            })
+        } 
+        else {
+            alert('Failed to upload files.')
+        }
+    })
+})
+
+document.querySelector('.close-upload-result').addEventListener('click', function () {
+    const $uploadResult = document.querySelector('.upload-result')
+    $uploadResult.hidden = true
+    
+    document.querySelector('.uploaded-page-link').textContent = ''
 })
 
 function removeFile(index) {

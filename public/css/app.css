@@ -99,3 +99,44 @@ body {
         border-color: #5a5a5a;
     }
 }
+
+.upload-result {
+    padding: 30px 45px;
+    overflow-y: auto;
+
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: gray;
+    span {
+        color: white;
+        margin-left: 20px;
+    }
+    .close-upload-result {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: inherit;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        text-align: center;
+        cursor: pointer;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            color: grey;
+        }
+    }
+}

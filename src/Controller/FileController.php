@@ -42,7 +42,7 @@ final class FileController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'download_link' => $this->generateUrl('download_file', [
+            'link' => $this->generateUrl('download_file', [
                 'token' => $token
             ], 0)
         ]);
