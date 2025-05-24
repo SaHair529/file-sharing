@@ -83,4 +83,33 @@ final class FileController extends AbstractController
 
         return new BinaryFileResponse($filePath);
     }
+
+    #[Route('/download_all/{token}', name: 'download_all', methods: ['GET'])]
+    public function downloadAll(string $token): BinaryFileResponse
+    {
+        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
+
+        $filesystem = new Filesystem();
+        if (!$filesystem->exists($uploadDir)) {
+            throw $this->createNotFoundException('Folder not found');
+        }
+
+        $zipFilePath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token . '.zip';
+        $zip = new \ZipArchive();
+
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \RuntimeException('Cannot create zip file');
+        }
+
+        $files = scandir($uploadDir);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $zip->addFile($uploadDir . '/' . $file, $file);
+            }
+        }
+
+        $zip->close();
+
+        return new BinaryFileResponse($zipFilePath);
+    }
 }
