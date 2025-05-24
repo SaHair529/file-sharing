@@ -42,13 +42,13 @@ final class FileController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'link' => $this->generateUrl('download_file', [
+            'link' => $this->generateUrl('download_page', [
                 'token' => $token
             ], 0)
         ]);
     }
 
-    #[Route('/download/{token}', name: 'download_file')]
+    #[Route('/download/{token}', name: 'download_page', methods: ['GET'])]
     public function download(string $token): Response
     {
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
@@ -58,22 +58,29 @@ final class FileController extends AbstractController
             throw $this->createNotFoundException('Folder not found');
         }
 
-        $zipFilePath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token . '.zip';
-        $zip = new \ZipArchive();
+        $files = array_diff(scandir($uploadDir), ['..', '.']);
 
-        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException('Cannot create zip file');
+        return $this->render('/file/download.html.twig', [
+            'files' => $files,
+            'token' => $token
+        ]);
+    }
+
+    #[Route('/download/{token}/{filename}', name: 'download_file', methods: ['GET'])]
+    public function downloadFile(string $token, string $filename): BinaryFileResponse
+    {
+        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
+
+        $filesystem = new Filesystem();
+        if (!$filesystem->exists($uploadDir)) {
+            throw $this->createNotFoundException('Folder not found');
         }
 
-        $files = scandir($uploadDir);
-        foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..') {
-                $zip->addFile($uploadDir . '/' . $file, $file);
-            }
+        $filePath = $uploadDir . '/' . $filename;
+        if (!$filesystem->exists($filePath)) {
+            throw $this->createNotFoundException('File not found');
         }
 
-        $zip->close();
-
-        return new BinaryFileResponse($zipFilePath);
+        return new BinaryFileResponse($filePath);
     }
 }
