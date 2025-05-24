@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\UploadedFile;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
