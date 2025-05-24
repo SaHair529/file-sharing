@@ -11,7 +11,7 @@
     <div class="fullscreen-centrilizer-container">
         <div class="files-gallery">
             {% for file in files %}
-                <div class="file-item" data-filename="{{ file }}">
+                <div class="file-item" title="{{ file }}" data-filename="{{ file }}">
                     <div class="file-item__image">
                         {% set extension = file|split('.')|last %}
                         {% if extension in ['txt', 'md', 'log'] %}

@@ -12,6 +12,7 @@ document.querySelector('#file').addEventListener('change', function (e) {
     selectedFiles.forEach((file, i) => {
         const $fileItem = document.createElement('div')
         $fileItem.classList.add('file-item')
+        $fileItem.title = file.name
         $fileItem.innerHTML = `
             <button class="file-item__remove" onclick="removeFile(${i})">×</button>
             <div class="file-item__image">${getFileEmoji(file.name)}</div>
@@ -71,6 +72,7 @@ function removeFile(index) {
     selectedFiles.forEach((file, index) => {
         const $fileItem = document.createElement('div')
         $fileItem.classList.add('file-item')
+        $fileItem.title = file.name
         $fileItem.innerHTML = `
             <button class="file-item__remove" onclick="removeFile(${index})">×</button>
             <div class="file-item__image">${getFileEmoji(file.name)}</div>
