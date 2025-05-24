@@ -12,11 +12,11 @@ body {
     position: absolute;
     bottom: 10px;
     left: 10px;
-    color: rgb(219, 219, 219);
+    color: rgb(181, 181, 181);
     text-decoration: none;
     cursor: pointer;
     &:hover {
-        color: white;
+        color: #EAF884;
     }
 }
 
