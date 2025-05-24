@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Token;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -28,6 +29,15 @@ final class FileController extends AbstractController
         }
 
         $token = bin2hex(random_bytes(16));
+        while ($em->getRepository(Token::class)->findOneBy(['value' => $token])) {
+            $token = bin2hex(random_bytes(16));
+        }
+        $tokenEntity = new Token();
+        $tokenEntity->setValue($token);
+        $tokenEntity->setExpiresIn(new \DateTimeImmutable('+1 hour'));
+        $em->persist($tokenEntity);
+        $em->flush();
+
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
 
         if (!is_dir($uploadDir)) {
@@ -47,14 +57,21 @@ final class FileController extends AbstractController
     }
 
     #[Route('/download/{token}', name: 'download_page', methods: ['GET'])]
-    public function download(string $token): Response
+    public function download(string $token, EntityManagerInterface $em): Response
     {
+        $tokenEntity = $em->getRepository(Token::class)->findOneBy(['value' => $token]);
+        if (!$tokenEntity || $tokenEntity->isExpired())
+            return $this->render('/file/download.html.twig', [
+                'error' => 'Токен не найден или истек'
+            ])->setStatusCode(Response::HTTP_NOT_FOUND);
+
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
 
         $filesystem = new Filesystem();
-        if (!$filesystem->exists($uploadDir)) {
-            throw $this->createNotFoundException('Folder not found');
-        }
+        if (!$filesystem->exists($uploadDir))
+            return $this->render('/file/download.html.twig', [
+                'error' => 'Папка с файлами не найдена'
+            ])->setStatusCode(Response::HTTP_NOT_FOUND);
 
         $files = array_diff(scandir($uploadDir), ['..', '.']);
 
@@ -65,39 +82,42 @@ final class FileController extends AbstractController
     }
 
     #[Route('/download/{token}/{filename}', name: 'download_file', methods: ['GET'])]
-    public function downloadFile(string $token, string $filename): BinaryFileResponse
+    public function downloadFile(string $token, string $filename, EntityManagerInterface $em): Response
     {
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
+        $tokenEntity = $em->getRepository(Token::class)->findOneBy(['value' => $token]);
+        if (!$tokenEntity || $tokenEntity->isExpired())
+            return new Response(null, Response::HTTP_NOT_FOUND);
 
         $filesystem = new Filesystem();
-        if (!$filesystem->exists($uploadDir)) {
-            throw $this->createNotFoundException('Folder not found');
-        }
+        if (!$filesystem->exists($uploadDir))
+            return new Response(null, Response::HTTP_NOT_FOUND);
 
         $filePath = $uploadDir . '/' . $filename;
-        if (!$filesystem->exists($filePath)) {
-            throw $this->createNotFoundException('File not found');
-        }
+        if (!$filesystem->exists($filePath))
+            return new Response(null, Response::HTTP_NOT_FOUND);
 
         return new BinaryFileResponse($filePath);
     }
 
     #[Route('/download_all/{token}', name: 'download_all', methods: ['GET'])]
-    public function downloadAll(string $token): BinaryFileResponse
+    public function downloadAll(string $token, EntityManagerInterface $em): Response
     {
+        $tokenEntity = $em->getRepository(Token::class)->findOneBy(['value' => $token]);
+        if (!$tokenEntity || $tokenEntity->isExpired())
+            return new Response(null, Response::HTTP_NOT_FOUND);
+
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
 
         $filesystem = new Filesystem();
-        if (!$filesystem->exists($uploadDir)) {
-            throw $this->createNotFoundException('Folder not found');
-        }
+        if (!$filesystem->exists($uploadDir))
+            return new Response(null, Response::HTTP_NOT_FOUND);
 
         $zipFilePath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token . '.zip';
         $zip = new \ZipArchive();
 
-        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException('Cannot create zip file');
-        }
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true)
+            return new Response(null, Response::HTTP_INTERNAL_SERVER_ERROR);
 
         $files = scandir($uploadDir);
         foreach ($files as $file) {

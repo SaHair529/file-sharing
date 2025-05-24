@@ -7,42 +7,46 @@
 {% endblock %}
 
 {% block body %}
-    <input id="token" type="hidden" value="{{ token }}"></input>
     <div class="fullscreen-centrilizer-container">
-        <div class="files-gallery">
-            {% for file in files %}
-                <div class="file-item" title="{{ file }}" data-filename="{{ file }}">
-                    <div class="file-item__image">
-                        {% set extension = file|split('.')|last %}
-                        {% if extension in ['txt', 'md', 'log'] %}
-                            📝
-                        {% elseif extension in ['doc', 'docx', 'pdf'] %}
-                            📄
-                        {% elseif extension in ['xls', 'xlsx', 'csv'] %}
-                            📊
-                        {% elseif extension in ['ppt', 'pptx'] %}
-                            📑
-                        {% elseif extension in ['jpg', 'jpeg', 'png', 'gif', 'svg'] %}
-                            🖼️
-                        {% elseif extension in ['mp4', 'avi', 'mov', 'mkv'] %}
-                            🎥
-                        {% elseif extension in ['mp3', 'wav', 'ogg'] %}
-                            🎵
-                        {% elseif extension in ['zip', 'rar', '7z', 'tar', 'gz'] %}
-                            📦
-                        {% elseif extension in ['js', 'py', 'html', 'css', 'java', 'c', 'cpp', 'cs', 'go', 'php', 'rb', 'swift'] %}
-                            💻
-                        {% elseif extension in ['exe', 'sh', 'bat'] %}
-                            ⚙️
-                        {% else %}
-                            ❓
-                        {% endif %}
+        {% if error is defined %}
+            <div class="error-message">{{ error }}</div>
+        {% else %}
+        <input id="token" type="hidden" value="{{ token }}"></input>
+            <div class="files-gallery">
+                {% for file in files %}
+                    <div class="file-item" title="{{ file }}" data-filename="{{ file }}">
+                        <div class="file-item__image">
+                            {% set extension = file|split('.')|last %}
+                            {% if extension in ['txt', 'md', 'log'] %}
+                                📝
+                            {% elseif extension in ['doc', 'docx', 'pdf'] %}
+                                📄
+                            {% elseif extension in ['xls', 'xlsx', 'csv'] %}
+                                📊
+                            {% elseif extension in ['ppt', 'pptx'] %}
+                                📑
+                            {% elseif extension in ['jpg', 'jpeg', 'png', 'gif', 'svg'] %}
+                                🖼️
+                            {% elseif extension in ['mp4', 'avi', 'mov', 'mkv'] %}
+                                🎥
+                            {% elseif extension in ['mp3', 'wav', 'ogg'] %}
+                                🎵
+                            {% elseif extension in ['zip', 'rar', '7z', 'tar', 'gz'] %}
+                                📦
+                            {% elseif extension in ['js', 'py', 'html', 'css', 'java', 'c', 'cpp', 'cs', 'go', 'php', 'rb', 'swift'] %}
+                                💻
+                            {% elseif extension in ['exe', 'sh', 'bat'] %}
+                                ⚙️
+                            {% else %}
+                                ❓
+                            {% endif %}
+                        </div>
+                        <div class="file-item__name">{{ file }}</div>
                     </div>
-                    <div class="file-item__name">{{ file }}</div>
-                </div>
-            {% endfor %}
-        </div>
-        <a class="upload-files-btn" href="{{ path('download_all', {token: token}) }}">Загрузить все файлы архивом</a>
+                {% endfor %}
+            </div>
+            <a class="upload-files-btn" href="{{ path('download_all', {token: token}) }}">Загрузить все файлы архивом</a>
+        {% endif %}
     </div>
 
 {% endblock %}
