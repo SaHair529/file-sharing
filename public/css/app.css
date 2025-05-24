@@ -20,6 +20,10 @@ body {
     }
 }
 
+.error-message {
+    color: rgb(255, 112, 112);
+}
+
 .fullscreen-centrilizer-container {
     display: flex;
     justify-content: center;
