@@ -62,7 +62,7 @@ final class FileController extends AbstractController
         $tokenEntity = $em->getRepository(Token::class)->findOneBy(['value' => $token]);
         if (!$tokenEntity || $tokenEntity->isExpired())
             return $this->render('/file/download.html.twig', [
-                'error' => 'Токен не найден или истек'
+                'error' => 'Файлы не найдены либо истек срок действия'
             ])->setStatusCode(Response::HTTP_NOT_FOUND);
 
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $token;
