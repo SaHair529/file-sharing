@@ -35,6 +35,10 @@ class RemoveExpiredTokensCommand extends Command
         
         foreach ($expiredTokens as $token) {
             $uploadDir = $this->kernel->getProjectDir() . '/public/uploads/' . $token->getValue();
+            $uploadZip = $this->kernel->getProjectDir() . '/public/uploads/' . $token->getValue() . '.zip';
+            if ($filesystem->exists($uploadZip)) {
+                $filesystem->remove($uploadZip);
+            }
             if ($filesystem->exists($uploadDir)) {
                 $filesystem->remove($uploadDir);
             }
