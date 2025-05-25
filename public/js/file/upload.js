@@ -1,5 +1,20 @@
 let selectedFiles = []
 
+document.addEventListener('click', function (e) {
+    const notClose = e.target.dataset.notClose
+    if (!e.target.classList.contains('closable') && !e.target.closest('.closable')) {
+        document.querySelectorAll('.closable').forEach(element => {
+            if (!element.classList.contains(notClose)) {
+                element.hidden = true
+            }
+        })
+    }
+})
+
+document.querySelector('.btn-info-open').addEventListener('click', function () {
+    document.querySelector('.info').hidden = false
+})
+
 document.querySelector('#file').addEventListener('change', function (e) {
     const files = e.target.files
     const $filesGallery = document.querySelector('.files-gallery')
