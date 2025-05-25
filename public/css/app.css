@@ -141,8 +141,13 @@ body {
     transform: translate(-50%, -50%);
     color: gray;
     span {
-        color: white;
+        color: #56DB3A;
+        background-color: #18171B;
         margin-left: 20px;
+        cursor: pointer;
+        &:hover {
+            color: #FF8400;
+        }
     }
     .close-upload-result {
         position: absolute;
@@ -165,5 +170,20 @@ body {
         &:hover {
             color: grey;
         }
+    }
+}
+
+.page-notifications {
+    position: fixed;
+    right: 10px;
+    bottom: 0;
+    z-index: 1000;
+
+    .page-notification {
+        padding: 5px;
+        background-color: #1e1e1e;
+        color: grey;
+        border: 2px solid #3a3a3a;
+        margin-bottom: 10px;
     }
 }

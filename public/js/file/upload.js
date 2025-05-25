@@ -62,6 +62,16 @@ document.querySelector('.close-upload-result').addEventListener('click', functio
     document.querySelector('.uploaded-page-link').textContent = ''
 })
 
+document.querySelector('.uploaded-page-link').addEventListener('click', function () {
+    const link = this.textContent.trim()
+    navigator.clipboard.writeText(link).then(() => {
+        document.querySelector('.buffer-copy-notification').hidden = false
+        setTimeout(() => {
+            document.querySelector('.buffer-copy-notification').hidden = true
+        }, 2000)
+    })
+})
+
 function removeFile(index) {
     selectedFiles.splice(index, 1)
 
