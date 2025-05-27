@@ -142,11 +142,11 @@ body {
         text-align: center;
         position: relative;
         border: 1px solid transparent;
-        transition: border-color 0.3s ease;
         padding: 5px;
         cursor: pointer;
         &:hover {
             border-color: rgba(255, 255, 255, 0.5);
+            opacity: .5;
         }
   
         .file-item__image {
