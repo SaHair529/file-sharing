@@ -40,7 +40,10 @@ document.querySelector('#file').addEventListener('change', function (e) {
     $uploadFilesBtn.hidden = false
 })
 
-document.querySelector('.upload-files-btn').addEventListener('click', function () {
+document.querySelector('.upload-files-btn').addEventListener('click', function (e) {
+    e.target.disabled = true
+    document.querySelector('.files-gallery').replaceChildren(createFullBlockLoader('Файлы загружаются'))
+
     const url = document.querySelector('form').getAttribute('action')
     const formData = new FormData()
     selectedFiles.forEach(file => {
@@ -59,6 +62,7 @@ document.querySelector('.upload-files-btn').addEventListener('click', function (
                 document.querySelector('.files-gallery').innerHTML = ''
                 document.querySelector('.files-gallery').hidden = true
                 document.querySelector('.upload-files-btn').hidden = true
+                e.target.disabled = false
 
                 document.querySelector('.upload-result').hidden = false
                 document.querySelector('.uploaded-page-link').textContent = responseData.link
