@@ -17,10 +17,10 @@ document.querySelector('.btn-info-open').addEventListener('click', function () {
 
 document.querySelector('#file').addEventListener('change', function (e) {
     const files = e.target.files
-    const $filesGallery = document.querySelector('.files-gallery')
+    const $filesGalleryBody = document.querySelector('.files-gallery__body')
     const $uploadFilesBtn = document.querySelector('.upload-files-btn')
 
-    $filesGallery.innerHTML = ''
+    $filesGalleryBody.innerHTML = ''
 
     selectedFiles = Array.from(files)
 
@@ -33,11 +33,17 @@ document.querySelector('#file').addEventListener('change', function (e) {
             <div class="file-item__image">${getFileEmoji(file.name)}</div>
             <div class="file-item__name">${file.name}</div>
         `
-        $filesGallery.appendChild($fileItem)
+        $filesGalleryBody.appendChild($fileItem)
     })
 
-    $filesGallery.hidden = false
-    $uploadFilesBtn.hidden = false
+    if (selectedFiles.length) {
+        document.querySelector('.files-gallery').hidden = false
+        $uploadFilesBtn.hidden = false
+    }
+    else {
+        document.querySelector('.files-gallery').hidden = true
+        $uploadFilesBtn.hidden = true
+    }
 })
 
 document.querySelector('.upload-files-btn').addEventListener('click', function (e) {
@@ -59,7 +65,7 @@ document.querySelector('.upload-files-btn').addEventListener('click', function (
             response.json().then(responseData => {
                 selectedFiles = []
                 document.querySelector('#file').value = ''
-                document.querySelector('.files-gallery').innerHTML = ''
+                document.querySelector('.files-gallery__body').innerHTML = ''
                 document.querySelector('.files-gallery').hidden = true
                 document.querySelector('.upload-files-btn').hidden = true
                 e.target.disabled = false
@@ -94,9 +100,9 @@ document.querySelector('.uploaded-page-link').addEventListener('click', function
 function removeFile(index) {
     selectedFiles.splice(index, 1)
 
-    const $filesGallery = document.querySelector('.files-gallery')
+    const $filesGalleryBody = document.querySelector('.files-gallery__body')
     const $uploadFilesBtn = document.querySelector('.upload-files-btn')
-    $filesGallery.innerHTML = ''
+    $filesGalleryBody.innerHTML = ''
 
     selectedFiles.forEach((file, index) => {
         const $fileItem = document.createElement('div')
@@ -107,11 +113,11 @@ function removeFile(index) {
             <div class="file-item__image">${getFileEmoji(file.name)}</div>
             <div class="file-item__name">${file.name}</div>
         `
-        $filesGallery.appendChild($fileItem);
+        $filesGalleryBody.appendChild($fileItem);
     })
 
     if (selectedFiles.length === 0) {
-        $filesGallery.hidden = true
+        document.querySelector('.files-gallery').hidden = true
         $uploadFilesBtn.hidden = true
     }
 }
