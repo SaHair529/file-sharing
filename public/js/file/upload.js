@@ -1,4 +1,5 @@
 let selectedFiles = []
+let selectedFilesInGB = 0
 
 document.addEventListener('click', function (e) {
     const notClose = e.target.dataset.notClose
@@ -23,7 +24,7 @@ document.querySelector('#file').addEventListener('change', function (e) {
     $filesGalleryBody.innerHTML = ''
 
     selectedFiles = Array.from(files)
-
+    
     selectedFiles.forEach((file, i) => {
         const $fileItem = document.createElement('div')
         $fileItem.classList.add('file-item')
@@ -35,6 +36,10 @@ document.querySelector('#file').addEventListener('change', function (e) {
         `
         $filesGalleryBody.appendChild($fileItem)
     })
+
+    const selectedFilesSize = selectedFiles.reduce((total, file) => total + file.size, 0)
+    selectedFilesInGB = (selectedFilesSize / (1024 * 1024 * 1024)).toFixed(2)
+    document.querySelector('.used-memory-value').textContent = selectedFilesInGB + ' GB'
 
     if (selectedFiles.length) {
         document.querySelector('.files-gallery').hidden = false
@@ -48,7 +53,7 @@ document.querySelector('#file').addEventListener('change', function (e) {
 
 document.querySelector('.upload-files-btn').addEventListener('click', function (e) {
     e.target.disabled = true
-    document.querySelector('.files-gallery').replaceChildren(createFullBlockLoader('Файлы загружаются'))
+    document.querySelector('.files-gallery__body').replaceChildren(createFullBlockLoader('Файлы загружаются'))
 
     const url = document.querySelector('form').getAttribute('action')
     const formData = new FormData()
