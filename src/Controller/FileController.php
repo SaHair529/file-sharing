@@ -27,7 +27,17 @@ final class FileController extends AbstractController
         if (!is_array($uploadedFiles)) {
             throw $this->createNotFoundException('No files uploaded.');
         }
-
+        
+        $totalSize = 0;
+        foreach ($uploadedFiles as $uploadedFile) {
+            $totalSize += $uploadedFile->getSize();
+        }
+        $maxSize = 1024 * 1024 * 1024;
+        if ($totalSize > $maxSize) {
+            return $this->json([
+                'error' => 'Суммарный размер файлов превышает 1 ГБ.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
         $token = bin2hex(random_bytes(16));
         while ($em->getRepository(Token::class)->findOneBy(['value' => $token])) {
             $token = bin2hex(random_bytes(16));
