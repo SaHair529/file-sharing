@@ -277,4 +277,9 @@ body {
         border: 2px solid #3a3a3a;
         margin-bottom: 10px;
     }
+    .limit-exceeded-notification {
+        background-color: #ff4d4d;
+        color: white;
+        border-color: #ff1a1a;
+    }
 }

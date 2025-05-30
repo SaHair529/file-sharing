@@ -1,5 +1,6 @@
 let selectedFiles = []
 let selectedFilesInGB = 0
+let maxSizeInGB = 1
 
 document.addEventListener('click', function (e) {
     const notClose = e.target.dataset.notClose
@@ -39,6 +40,17 @@ document.querySelector('#file').addEventListener('change', function (e) {
 
     const selectedFilesSize = selectedFiles.reduce((total, file) => total + file.size, 0)
     selectedFilesInGB = (selectedFilesSize / (1024 * 1024 * 1024)).toFixed(2)
+    if (selectedFilesInGB > maxSizeInGB) {
+        document.querySelector('.limit-exceeded-notification').hidden = false
+        setTimeout(() => {
+            document.querySelector('.limit-exceeded-notification').hidden = true
+        }, 2000)
+
+        toggleFilesElements(true)
+        document.querySelector('#file').value = ''
+        return
+    }
+
     document.querySelector('.used-memory-value').textContent = selectedFilesInGB + ' GB'
 
     if (selectedFiles.length) {
@@ -196,5 +208,18 @@ function getFileEmoji(fileName) {
 
         default:
             return '❓'
+    }
+}
+
+function toggleFilesElements(hiddenValue) {
+    document.querySelector('.files-gallery').hidden = hiddenValue
+    document.querySelector('.upload-files-btn').hidden = hiddenValue
+
+    if (hiddenValue) {
+        selectedFiles = []
+        selectedFilesInGB = 0
+
+        document.querySelector('.files-gallery__body').innerHTML = ''
+        document.querySelector('.used-memory-value').textContent = '0 GB'
     }
 }
