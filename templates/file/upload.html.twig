@@ -7,14 +7,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 {% endblock %}
 
+{% block page_css %}
+    <link rel="stylesheet" href="{{ asset('css/file/upload.css') }}">
+{% endblock %}
+
 {% block body %}
 
     <div class="btn-info-open" data-not-close="info">?</div>
     <div class="info closable" hidden>
-        <p>Вы можете загрузить файлы на этот сайт, чтобы получить ссылку для скачивания их из другого устройства</p>
-        <p>После загрузки файлов вы получите ссылку на страницу, где будут отображены все загруженные файлы.</p>
-        <p>Ссылка будет действовать в течение 1 часа, после чего файлы будут удалены.</p>
-        <p>Вы можете загрузить несколько файлов одновременно.</p>
+        <p>Загрузите один или несколько файлов и получите ссылку для скачивания.</p>
+        <p>Ссылка будет работать 1 час, затем файлы удалятся автоматически.</p>
     </div>
 
     <div class="fullscreen-centrilizer-container">

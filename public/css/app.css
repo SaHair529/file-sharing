@@ -154,7 +154,7 @@ body {
         .file-item {
             margin: 10px;
             width: 100px;
-            height: 65px;
+            height: 63px;
             font-size: 12px;
             overflow: hidden;
             text-align: center;
@@ -174,19 +174,22 @@ body {
                 position: absolute;
                 top: 0;
                 right: 0;
-                background-color: #ff4d4d;
                 color: white;
                 border: none;
                 border-radius: 50%;
                 width: 12px;
                 height: 12px;
-                font-size: 8px;
+                font-size: 12px;
                 text-align: center;
                 cursor: pointer;
+                background-color: #1e1e1e;
                 
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                &:hover {
+                    background-color: #ff4d4d;
+                }
             }
         }
     }

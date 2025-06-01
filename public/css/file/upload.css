@@ -1,0 +1,4 @@
+.files-gallery .files-gallery__body .file-item {
+    cursor: default;
+    border: none;
+}
