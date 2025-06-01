@@ -89,6 +89,14 @@ document.querySelector('.upload-files-btn').addEventListener('click', function (
 
                 document.querySelector('.upload-result').hidden = false
                 document.querySelector('.uploaded-page-link').textContent = responseData.link
+
+                const qrContainer = document.querySelector('.upload-page-qr')
+                qrContainer.innerHTML = ''
+                new QRCode(qrContainer, {
+                    text: responseData.link,
+                    width: 128,
+                    height: 128
+                })
             })
         } 
         else {

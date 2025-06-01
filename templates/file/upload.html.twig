@@ -4,6 +4,7 @@
 
 {% block page_js %}
     <script src="{{ asset('js/file/upload.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -41,8 +42,17 @@
 
     <div class="upload-result" hidden>
         <button class="close-upload-result">×</button>
-        Ссылка на страницу с файлами: <span class="uploaded-page-link"></span>
+        Ссылка на страницу с файлами: 
+        <div class="uploaded-page-link"></div>
+        <div class="upload-page-qr"></div>
     </div>
+
+    {# <div class="upload-result">
+        <button class="close-upload-result">×</button>
+        Ссылка на страницу с файлами: <div class="uploaded-page-link">http://localhost:8000/download/86b045132ce7f5265890859326378f2f</div>
+        QR-код для скачивания:
+        <div class="upload-page-qr" title="http://localhost:8000/download/86b045132ce7f5265890859326378f2f"><canvas width="128" height="128" style="display: none;"></canvas><img src="data:image/png;base64,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" style="display: block;"></div>
+    </div> #}
 
     <div class="page-notifications">
         <div class="page-notification buffer-copy-notification" hidden>

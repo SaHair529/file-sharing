@@ -218,7 +218,7 @@ body {
 }
 
 .upload-result {
-    padding: 30px 45px;
+    padding: 30px 20px;
     overflow-y: auto;
 
     background-color: #1e1e1e;
@@ -230,15 +230,33 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: gray;
-    span {
+    .uploaded-page-link {
+        padding: 10px 5px;
         color: #56DB3A;
         background-color: #18171B;
-        margin-left: 20px;
+        margin: 10px 0;
         cursor: pointer;
         word-break: break-all;
+        max-width: 300px;
+        white-space: nowrap;
+        overflow-x: auto;
         &:hover {
             color: #FF8400;
         }
+    }
+    .uploaded-page-link::-webkit-scrollbar {
+        height: 6px;
+        background: #333;
+        border-radius: 3px;
+    }
+
+    .uploaded-page-link::-webkit-scrollbar-thumb {
+        background: grey;
+        border-radius: 3px;
+    }
+
+    .upload-page-qr {
+        margin-top: 10px;
     }
     .close-upload-result {
         position: absolute;
