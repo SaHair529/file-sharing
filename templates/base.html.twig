@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="/file-sharing/{{ asset('favicon.png') }}" type="image/x-icon">
+        <link rel="icon" href="{{ asset('favicon.png') }}" type="image/x-icon">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         {% block stylesheets %}
@@ -14,7 +14,7 @@
         {% block page_css %}{% endblock %}
 
         {% block javascripts %}
-            <script src="/file-sharing/{{ asset('js/app.js') }}"></script>
+            <script src="{{ asset('js/app.js') }}"></script>
         {% endblock %}
     </head>
     <body>
